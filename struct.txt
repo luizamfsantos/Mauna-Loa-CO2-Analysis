@@ -1,59 +1,57 @@
+Task List:
 A. Pre-processing data:
-- Drop data points recorded as -99.99
-(some alternatives will be consider later such as forward filling, fill missing values with previous values and interpolation)
-- Split the data into training and test datasets using 80:20 split
+- [X] Convert column types
+- [X] Reindex dataframe starting at 0 for 1958-01-01 and adding 1 for every month
+- [X] Split the data into training and test datasets using 80:20 split
+- [ ] Drop data points recorded as -99.99
+[ ] Completed
 
 B. Detrending:
-- Fitting the training data to a simple linear model F = alpha_0 + alpha_1*t to estimate the long-term trend F
-    - Estimate values for alpha_0 and alpha_1 using scikit-learn LinearRegression()
-    - Plot the residual errors R = C - F where C is the average CO2 concentration in month i (i=1,2,..., counting from March 1958)
-    - Calculate the root mean squared prediction error (RMSE) and mean absolute percentage error (MAPE) with respect to the test set for the model.
-        - using scikit-learn mean_squared_error and mean_absolute_percentage_error
-- Fitting a quadratic model to the data F = beta_0 + beta_1*t + beta_2*t**2 to estimate the long-term trend F
-    - Estimate values for beta_0, beta_1 and beta_2 
-    - Plot the residual errors R = C - F where C is the average CO2 concentration in month i (i=1,2,..., counting from March 1958)
-    - Calculate the root mean squared prediction error (RMSE) and mean absolute percentage error (MAPE) with respect to the test set for the model.
-        - using scikit-learn mean_squared_error and mean_absolute_percentage_error
-- Fitting a cubic model to the training data F = gamma_0 + gamma_1*t + gamma_2*t**2 + gamma_3*t**3
-    - Estimate values for gamma_0, gamma_1, gamma_2 and gamma_3
-    - Plot the residual errors R = C - F where C is the average CO2 concentration in month i (i=1,2,..., counting from March 1958)
-    - Calculate the root mean squared prediction error (RMSE) and mean absolute percentage error (MAPE) with respect to the test set for the model.
-        - using scikit-learn mean_squared_error and mean_absolute_percentage_error
-- Model Selection
-    - Plot the residual errors side by side for each of the three models
-    - Compare the RSME and MAPE for the three models
-    - Select the best models based on the two conditions above
+- [ ] Fitting the training data to a simple linear model F = alpha_0 + alpha_1*t to estimate the long-term trend F
+    - [ ] Estimate values for alpha_0 and alpha_1 using scikit-learn LinearRegression()
+    - [ ] Plot the residual errors R = C - F
+    - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
+- [ ] Fitting a quadratic model to the data F = beta_0 + beta_1*t + beta_2*t**2 to estimate the long-term trend F
+    - [ ] Estimate values for beta_0, beta_1, and beta_2
+    - [ ] Plot the residual errors R = C - F
+    - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
+- [ ] Fitting a cubic model to the training data F = gamma_0 + gamma_1*t + gamma_2*t**2 + gamma_3*t**3
+    - [ ] Estimate values for gamma_0, gamma_1, gamma_2, and gamma_3
+    - [ ] Plot the residual errors R = C - F
+    - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
+- [ ] Model Selection
+    - [ ] Plot the residual errors side by side for each of the three models
+    - [ ] Compare the RSME and MAPE for the three models
+    - [ ] Select the best models based on the two conditions above
+[ ] Completed
 
 C. Unseasoning:
-- Remove the determinist trend F from the time series (choosen from the model selection step): C - F
-- Group by month and store in variables P1, P2, ... P12
-- Calculate the average signal for each month P1_bar, P2_bar,..., P12_bar
-- Plot the periodic signal Pi against time:
-    - Create a dataframe with 
-        - Month_index: 1,...,12
-        - Average signal: P1_bar,..., P12_bar
-        - Month_label: January, ... December
-    - Plot dataframe
-        - use scikit-learn interp1d for interpolation
+- [ ] Remove the deterministic trend F from the time series
+- [ ] Group by month and store in variables P1, P2, ... P12
+- [ ] Calculate the average signal for each month P1_bar, P2_bar,..., P12_bar
+- [ ] Plot the periodic signal Pi against time
+[ ] Completed
 
 D. Aggregate Model with Trend and Seasonality:
-- Create the final function for CO2 concentration: C = F + P, consider that the actual is C = F + P + R, where R is the remainining residual
-- Make the prediction using C and plot it on top of actual data, while indicating the split between the training and testing data
-- Calculate the final root mean squared prediction error (RMSE) and the mean absolute percentage error (MAPE) with respect to the test set.
-- Plot the Aggregate model side by side with the one without the periodic signal
-- Calculate the ratio of the range of the values of F to the amplitude of P for each month
-- Calculate the ratio of the range of the values of P to the range of the residuals
+- [ ] Create the final function for CO2 concentration: C = F + P
+- [ ] Make the prediction using C and plot it on top of the actual data, indicating the split between the training and testing data
+- [ ] Calculate the final RMSE and MAPE with respect to the test set
+- [ ] Plot the Aggregate model side by side with the one without the periodic signal
+- [ ] Calculate the ratio of the range of the values of F to the amplitude of P for each month
+- [ ] Calculate the ratio of the range of the values of P to the range of the residuals
+[ ] Completed
 
 E. Autocovariance Function:
-- Create a new dataframe that has removed trend and seasonality
-- Compute PACF and ACF before models
-- Fit a MA(1) model to the data
-    - Obtain the model parameters using statsmodels.tsa.arima.model.ARIMA
-    - Plot Partial Autocorrelation Function (PACF) and Autocorrelation Function (ACF) side by side to the before model 
-    - Evaluate the fitted models using Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC)
-    - Conduct residual analysis to check for any remaining patterns in the residuals that the model has not captured. This includes checking for autocorrelation in the residuals and ensuring that they are normally distributed.
-- Fit a AR(1) model to the data
-    - Obtain the model parameters using statsmodels.tsa.arima.model.ARIMA
-    - Plot Partial Autocorrelation Function (PACF) and Autocorrelation Function (ACF) side by side to the before model 
-    - Evaluate the fitted models using Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC)
-    - Conduct residual analysis to check for any remaining patterns in the residuals that the model has not captured. This includes checking for autocorrelation in the residuals and ensuring that they are normally distributed.
+- [ ] Create a new dataframe that has removed trend and seasonality
+- [ ] Compute PACF and ACF before models
+- [ ] Fit a MA(1) model to the data
+    - [ ] Obtain the model parameters using statsmodels.tsa.arima.model.ARIMA
+    - [ ] Plot PACF and ACF side by side to the before model
+    - [ ] Evaluate the fitted models using AIC and BIC
+    - [ ] Conduct residual analysis to check for any remaining patterns in the residuals
+- [ ] Fit an AR(1) model to the data
+    - [ ] Obtain the model parameters using statsmodels.tsa.arima.model.ARIMA
+    - [ ] Plot PACF and ACF side by side to the before model
+    - [ ] Evaluate the fitted models using AIC and BIC
+    - [ ] Conduct residual analysis to check for any remaining patterns in the residuals
+[ ] Completed
