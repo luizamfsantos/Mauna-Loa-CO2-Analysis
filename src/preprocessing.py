@@ -21,6 +21,7 @@ def clean_data(data):
     df, _ = convert_data_types(df)
     df['exact_date'] = get_exact_date(df['exact_date'])
     df = add_time_index(df)
+    df = remove_null(df)
     return df
 
 def read_data_from_csv(url):
@@ -156,6 +157,24 @@ def add_time_index(df, date_col='exact_date'):
     df['t'] = df[date_col].apply(lambda x: (x.year - base_date.year) * 12 + (x.month - base_date.month) + (x.day - base_date.day) / 30)
     # round to 0, 0.5 or 1
     df['t'] = df['t'].apply(lambda x: round(x * 2) / 2)
+    return df
+
+def remove_null(df):
+    '''
+    The data has very specific null values equals to -99.99
+    Remove the rows
+
+    Parameters:
+    -----------
+    df : pandas.DataFrame
+        The input DataFrame to remove the null values from.
+    
+    Returns:
+    --------
+    df : pandas.DataFrame
+        The DataFrame with the null values removed.
+    '''
+    df = df[df['CO2_concentration'] != -99.99]
     return df
 
 def test_train_split(df):
