@@ -3,8 +3,8 @@ A. Pre-processing data:
 - [X] Convert column types
 - [X] Reindex dataframe starting at 0 for 1958-01-01 and adding 1 for every month
 - [X] Split the data into training and test datasets using 80:20 split
-- [ ] Drop data points recorded as -99.99
-[ ] Completed
+- [X] Drop data points recorded as -99.99
+[X] Completed
 
 B. Detrending:
 - [ ] Fitting the training data to a simple linear model F = alpha_0 + alpha_1*t to estimate the long-term trend F
