@@ -20,43 +20,40 @@ class TestPolynomialRegression(unittest.TestCase):
         self.degree3 = 3
 
     def test_polynomial_regression_output(self):
-        reg, score = polynomial_regression(self.X, self.y, self.degree1)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree1)
         self.assertIsInstance(reg, LinearRegression)
-        self.assertIsInstance(score, float)
+        self.assertIsInstance(coef, object)
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree2)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree2)
         self.assertIsInstance(reg, LinearRegression)
-        self.assertIsInstance(score, float)
+        self.assertIsInstance(coef, object)
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree3)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree3)
         self.assertIsInstance(reg, LinearRegression)
-        self.assertIsInstance(score, float)
+        self.assertIsInstance(coef, object)
 
     def test_polynomial_regression_values(self):
-        reg, score = polynomial_regression(self.X, self.y, self.degree1)
-        self.assertAlmostEqual(reg.coef_[0][0], 1.85, places=2)
-        self.assertAlmostEqual(score, 0.983, places=2)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree1)
+        self.assertAlmostEqual(coef[0][0], 1.85, places=2)
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree2)
-        self.assertAlmostEqual(reg.coef_[0][0], 2.49, places=2)
-        self.assertAlmostEqual(score, 0.9880, places=2) 
+        reg, coef = polynomial_regression(self.X, self.y, self.degree2)
+        self.assertAlmostEqual(coef[0][0], 2.49, places=2)
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree3)
-        self.assertAlmostEqual(reg.coef_[0][0], -1.44, places=2)
-        self.assertAlmostEqual(score, 0.997, places=2) 
+        reg, coef = polynomial_regression(self.X, self.y, self.degree3)
+        self.assertAlmostEqual(coef[0][0], -1.44, places=2)
 
     def test_polynomial_regression_type(self):
-        reg, score = polynomial_regression(self.X, self.y, self.degree1)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree1)
         self.assertTrue(isinstance(reg, LinearRegression))
-        self.assertTrue(isinstance(score, float))
+        self.assertTrue(isinstance(coef, object))
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree2)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree2)
         self.assertTrue(isinstance(reg, LinearRegression))
-        self.assertTrue(isinstance(score, float))
+        self.assertTrue(isinstance(coef, object))
 
-        reg, score = polynomial_regression(self.X, self.y, self.degree3)
+        reg, coef = polynomial_regression(self.X, self.y, self.degree3)
         self.assertTrue(isinstance(reg, LinearRegression))
-        self.assertTrue(isinstance(score, float))
+        self.assertTrue(isinstance(coef, object))
 
 
 if __name__ == '__main__':

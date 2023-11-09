@@ -22,8 +22,8 @@ def polynomial_regression(X, y, degree):
     poly = PolynomialFeatures(degree=degree, include_bias=False)  # create a PolynomialFeatures object
     X_poly = poly.fit_transform(X)  # transform the features to include polynomial terms
     reg = LinearRegression().fit(X_poly, y)  # fit the linear regression model
-    score = reg.score(X_poly, y)  # calculate the R-squared score
-    return reg, score
+    coef = reg.coef_ # get the parameters of the model
+    return reg, coef
 
 
 def calculate_residuals(y_test, y_pred): 
