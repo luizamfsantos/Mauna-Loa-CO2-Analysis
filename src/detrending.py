@@ -27,14 +27,6 @@ def polynomial_regression(X, y, degree):
     return reg, coef
 
 
-def calculate_residuals(y_test, y_pred): 
-    '''This function calculates the residual errors for a given model.'''
-    pass
-
-def calculate_metrics(y_test, y_pred): 
-    '''This function calculates the RMSE and MAPE for a given model.'''
-    pass
-
 if __name__ == '__main__':
     path = 'data/processed/CO2_clean.csv'
     df = pd.read_csv(path)
