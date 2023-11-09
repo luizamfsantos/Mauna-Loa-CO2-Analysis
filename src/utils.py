@@ -31,7 +31,7 @@ def calculate_residuals(model, X_test, y_test, degree):
         return residuals
     except Exception as e:
         raise ValueError(f"An error occurred during residual calculation: {e}")
-        
+
 def plot_residuals(residuals):
     '''
     Plot the residuals for a given model.
@@ -54,11 +54,11 @@ def estimate_parameters(X_train, y_train, degree):
     model_coeffs = np.polyfit(X_train, y_train, degree)
     return np.poly1d(model_coeffs)
 
-def plot_residuals(residuals):
-    # Plot the residuals
-    # Your code for plotting residuals
-    pass
 
 def calculate_rmse(y_test, y_pred):
     # Calculate RMSE
     return mean_squared_error(y_test, y_pred, squared=False)
+
+def calculate_mape(y_test, y_pred):
+    # Calculate MAPE
+    return np.mean(np.abs((y_test - y_pred) / y_test)) * 100
