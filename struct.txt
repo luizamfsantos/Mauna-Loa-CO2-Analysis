@@ -8,15 +8,15 @@ A. Pre-processing data:
 
 B. Detrending:
 - [ ] Fitting the training data to a simple linear model F = alpha_0 + alpha_1*t to estimate the long-term trend F
-    - [ ] Estimate values for alpha_0 and alpha_1 using scikit-learn LinearRegression()
+    - [X] Estimate values for alpha_0 and alpha_1 using scikit-learn LinearRegression()
     - [ ] Plot the residual errors R = C - F
     - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
 - [ ] Fitting a quadratic model to the data F = beta_0 + beta_1*t + beta_2*t**2 to estimate the long-term trend F
-    - [ ] Estimate values for beta_0, beta_1, and beta_2
+    - [X] Estimate values for beta_0, beta_1, and beta_2
     - [ ] Plot the residual errors R = C - F
     - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
 - [ ] Fitting a cubic model to the training data F = gamma_0 + gamma_1*t + gamma_2*t**2 + gamma_3*t**3
-    - [ ] Estimate values for gamma_0, gamma_1, gamma_2, and gamma_3
+    - [X] Estimate values for gamma_0, gamma_1, gamma_2, and gamma_3
     - [ ] Plot the residual errors R = C - F
     - [ ] Calculate the RMSE and MAPE with respect to the test set for the model
 - [ ] Model Selection

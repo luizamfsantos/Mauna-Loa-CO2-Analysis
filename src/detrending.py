@@ -35,4 +35,18 @@ def calculate_metrics(y_test, y_pred):
     pass
 
 if __name__ == '__main__':
-    pass
+    path = 'data/processed/CO2_clean.csv'
+    df = pd.read_csv(path)
+    from preprocessing import test_train_split
+    train_df, test_df = test_train_split(df)
+    X_train = train_df[['t']]
+    y_train = train_df[['CO2_concentration']]
+    # fit a polynomial regression model of degree 1
+    reg, coef = polynomial_regression(X_train, y_train, degree=1)
+    print(f'y={coef[0][0]}x + {reg.intercept_[0]}')
+    # fit a polynomial regression model of degree 2
+    reg, coef = polynomial_regression(X_train, y_train, degree=2)
+    print(f'y={coef[0][0]}x^2 + {coef[0][1]}x + {reg.intercept_[0]}')
+    # fit a polynomial regression model of degree 3
+    reg, coef = polynomial_regression(X_train, y_train, degree=3)
+    print(f'y={coef[0][0]}x^3 + {coef[0][1]}x^2 + {coef[0][2]}x + {reg.intercept_[0]}')
