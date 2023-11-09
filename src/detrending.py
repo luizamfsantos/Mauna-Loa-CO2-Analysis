@@ -1,14 +1,30 @@
-def fit_linear_model(X_train, y_train): 
-    '''This function fits the linear model to the training data.'''
-    pass
+import pandas as pd
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
 
-def fit_quadratic_model(X_train, y_train): 
-    '''This function fits the quadratic model to the training data.'''
-    pass
+def polynomial_regression(X, y, degree):
+    '''
+    Fits a polynomial regression model of the specified degree to the input data.
 
-def fit_cubic_model(X_train, y_train): 
-    '''This function fits the cubic model to the training data.'''
-    pass
+    Parameters:
+    -----------
+    X: pandas.DataFrame 
+        The input features.
+    y: pandas.DataFrame 
+        The target variable.
+    degree: int
+        The degree of the polynomial regression model.
+
+    Returns:
+    --------
+    tuple: A tuple containing the fitted regression model and the R-squared score.
+    '''
+    poly = PolynomialFeatures(degree=degree, include_bias=False)  # create a PolynomialFeatures object
+    X_poly = poly.fit_transform(X)  # transform the features to include polynomial terms
+    reg = LinearRegression().fit(X_poly, y)  # fit the linear regression model
+    score = reg.score(X_poly, y)  # calculate the R-squared score
+    return reg, score
+
 
 def calculate_residuals(y_test, y_pred): 
     '''This function calculates the residual errors for a given model.'''
@@ -16,4 +32,7 @@ def calculate_residuals(y_test, y_pred):
 
 def calculate_metrics(y_test, y_pred): 
     '''This function calculates the RMSE and MAPE for a given model.'''
+    pass
+
+if __name__ == '__main__':
     pass
