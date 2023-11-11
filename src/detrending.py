@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 
@@ -20,10 +21,11 @@ def polynomial_regression(X, y, degree):
     tuple: A tuple containing the fitted regression model and the R-squared score.
     '''
     if degree > 1:
-            poly = PolynomialFeatures(degree)
-            X = poly.fit_transform(X) # transform the features to include polynomial terms
-    reg = LinearRegression().fit(X, y)  # fit the linear regression model
-    coef = reg.coef_ # get the parameters of the model
+        X_poly = np.vander(X.squeeze(), degree + 1)
+        reg = LinearRegression().fit(X_poly, y)
+    else:
+        reg = LinearRegression().fit(X, y)
+    coef = reg.coef_
     return reg, coef
 
 
