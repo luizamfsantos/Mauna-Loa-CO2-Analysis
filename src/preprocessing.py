@@ -154,9 +154,7 @@ def add_time_index(df, date_col='exact_date'):
     assert date_col in df.columns, f'df must contain column {date_col}'
     assert all(isinstance(val, datetime) for val in df[date_col]), f'column {date_col} must contain datetime objects'
     base_date = datetime(1958, 1, 1)
-    df['t'] = df[date_col].apply(lambda x: (x.year - base_date.year) * 12 + (x.month - base_date.month) + (x.day - base_date.day) / 30)
-    # round to 0, 0.5 or 1
-    df['t'] = df['t'].apply(lambda x: round(x * 2) / 2)
+    df['t'] = df[date_col].apply(lambda x: ((x.year - base_date.year) * 12 + x.month - base_date.month + 0.5)/ 12)
     return df
 
 def remove_null(df):
@@ -204,3 +202,5 @@ if __name__ == '__main__':
     print(df.head())
     print(train.head())
     print(test.head())
+    # save the data
+    df.to_csv('data/processed/CO2_clean.csv', index=False)
