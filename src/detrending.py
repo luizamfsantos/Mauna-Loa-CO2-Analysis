@@ -26,48 +26,64 @@ def polynomial_regression(X, y, degree):
     else:
         reg = LinearRegression().fit(X, y)
     coef = reg.coef_
-    return reg, coef
+    return reg, coef[0][:degree]
 
+
+def remove_trend(data, coef, intercept, degree): 
+    '''
+    This function removes the deterministic trend from the time series data based on the selected model.
+    
+    Parameters:
+    ----------
+    data: pandas.DataFrame
+        data to be de-trended
+        contains column 'CO2_concentration'
+    coef: numpy.array
+        contains the coefficients for the linear model
+    intercept: float
+        the value of the intercept for the linear model
+    degree: int
+        specifies the type of model. 
+        e.g. degree = 1, y = a_1*x+a_0
+        e.g. degree = 2, y = a_2*x**2 + a_1*x+a_0
+
+    Returns:
+    --------
+    data: pandas.DataFrame
+        data detrended
+    
+    Example:
+    --------
+    >>> data = pd.DataFrame({'t':[1,2,3],'CO2_concentration':[5.1,5.4,6.3]})
+    >>> coef = np.array([.5])
+    >>> intercept = 4.5
+    >>> degree = 1
+    >>> data = remove_trend(data,coef,intercept,degree)
+    >>> data
+        t, CO2_concentration
+    0   1, 4.6
+    1   2, 4.4
+    2   3, 4.8
+    '''
+    assert isinstance(coef, np.ndarray)
+    assert len(coef) == degree
+    coef = coef.reshape(1,degree)
+    trend = np.array(data['t']).reshape(-1,1).dot(coef)
+    trend = np.sum(trend, axis=1) + intercept
+    trend = pd.DataFrame(trend, columns=['trend'])
+    data['CO2_concentration'] = data['CO2_concentration'] - trend['trend']
+    return data
 
 if __name__ == '__main__':
     path = 'data/processed/CO2_clean.csv'
     df = pd.read_csv(path)
     from preprocessing import test_train_split
-    from utils import calculate_residuals, plot_residuals, calculate_rmse, calculate_mape
-    train_df, test_df = test_train_split(df)
+    train_df, _ = test_train_split(df)
     X_train = train_df[['t']]
     y_train = train_df[['CO2_concentration']]
-    X_test = test_df[['t']]
-    y_test = test_df[['CO2_concentration']]
-    # fit a polynomial regression model of degree 1
-    reg, coef = polynomial_regression(X_train, y_train, degree=1)
-    print(f'y={coef[0][0]}x + {reg.intercept_[0]}')
-    residuals1 = calculate_residuals(reg, X_test, y_test, degree=1)
-    pred = reg.predict(X_test)
-    plot_residuals(residuals1)
-    rmse = calculate_rmse(y_test, pred)
-    mape = calculate_mape(y_test, pred)
-    print(f'RMSE: {rmse}')
-    print(f'MAPE: {mape}')
-    # # fit a polynomial regression model of degree 2
-    reg, coef = polynomial_regression(X_train, y_train, degree=2)
-    print(f'y={coef[0][0]}x^2 + {coef[0][1]}x + {reg.intercept_[0]}')
-    residuals2 = calculate_residuals(reg, X_test, y_test, degree=2)
-    X_test_poly_2 = PolynomialFeatures(2).fit_transform(X_test)
-    pred = reg.predict(X_test_poly_2)
-    plot_residuals(residuals2)
-    rmse = calculate_rmse(y_test, pred)
-    mape = calculate_mape(y_test, pred)
-    print(f'RMSE: {rmse}')
-    print(f'MAPE: {mape}')
-    # fit a polynomial regression model of degree 3
-    reg, coef = polynomial_regression(X_train, y_train, degree=3)
-    print(f'y={coef[0][0]}x^3 + {coef[0][1]}x^2 + {coef[0][2]}x + {reg.intercept_[0]}')
-    residuals3 = calculate_residuals(reg, X_test, y_test, degree=3)
-    X_test_poly_3 = PolynomialFeatures(3).fit_transform(X_test)
-    pred = reg.predict(X_test_poly_3)
-    plot_residuals(residuals3)
-    rmse = calculate_rmse(y_test, pred)
-    mape = calculate_mape(y_test, pred)
-    print(f'RMSE: {rmse}')
-    print(f'MAPE: {mape}')
+    degree = 2
+    reg, coef = polynomial_regression(X_train, y_train, degree)
+    intercept = reg.intercept_
+    data_detrended = remove_trend(df, coef, intercept, degree)
+    print(data_detrended.head())
+    print(data_detrended.tail())
