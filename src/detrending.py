@@ -85,5 +85,6 @@ if __name__ == '__main__':
     reg, coef = polynomial_regression(X_train, y_train, degree)
     intercept = reg.intercept_
     data_detrended = remove_trend(df, coef, intercept, degree)
+    # add a column 'month' to the dataframe
+    data_detrended['month'] = pd.to_datetime(df['exact_date']).dt.month
     print(data_detrended.head())
-    print(data_detrended.tail())
