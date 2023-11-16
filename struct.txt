@@ -26,7 +26,7 @@ B. Detrending:
 [X] Completed
 
 C. Unseasoning:
-- [ ] Remove the deterministic trend F from the time series
+- [X] Remove the deterministic trend F from the time series
 - [ ] Group by month and store in variables P1, P2, ... P12
 - [ ] Calculate the average signal for each month P1_bar, P2_bar,..., P12_bar
 - [ ] Plot the periodic signal Pi against time
