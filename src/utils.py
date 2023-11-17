@@ -64,6 +64,12 @@ def calculate_mape(y_test, y_pred):
     # Calculate MAPE
     return np.mean(np.abs((y_test - y_pred) / y_test)) * 100
 
+def evaluate_MSE(residuals):
+    ''' 
+    Finds the MSE given the residuals of the model.
+    '''
+    return np.mean(residuals**2)
+
 def evaluate_AIC(k, residuals):
   """
   Finds the AIC given the number of parameters estimated and 
