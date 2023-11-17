@@ -2,6 +2,7 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
+from scipy.stats import norm 
 
 def calculate_residuals(model, X_test, y_test, degree):
     '''
@@ -62,3 +63,39 @@ def calculate_rmse(y_test, y_pred):
 def calculate_mape(y_test, y_pred):
     # Calculate MAPE
     return np.mean(np.abs((y_test - y_pred) / y_test)) * 100
+
+def evaluate_AIC(k, residuals):
+  """
+  Finds the AIC given the number of parameters estimated and 
+  the residuals of the model. Assumes residuals are distributed 
+  Gaussian with unknown variance. 
+  """
+  standard_deviation = np.std(residuals)
+  log_likelihood = norm.logpdf(residuals, 0, scale=standard_deviation)
+  return 2 * k - 2 * np.sum(log_likelihood)
+
+def evaluate_BIC(k, residuals):
+  """
+  Finds the AIC given the number of parameters estimated and 
+  the residuals of the model. Assumes residuals are distributed 
+  Gaussian with unknown variance. 
+  """
+  standard_deviation = np.std(residuals)
+  log_likelihood = norm.logpdf(residuals, 0, scale=standard_deviation)
+  return k * np.log(len(residuals)) - 2 * np.sum(log_likelihood)
+
+def generate_model(degree):
+    terms = [f'coefficients[{i}]*x**{degree - i}' for i in range(degree)]
+    model = ' + '.join(terms)
+    return model
+
+def save_model(reg, coef, degree):
+    model = generate_model(degree)
+    model_info = {
+        'coefficients': coef.tolist(),
+        'intercept': reg.intercept_.tolist()[0],
+        'params': reg.get_params(),
+        'order': degree,
+        'model': model
+    }
+    return model_info

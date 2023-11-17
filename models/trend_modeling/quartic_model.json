@@ -1,0 +1,17 @@
+{
+    "coefficients": [
+        1.440258948278244e-05,
+        -0.0015527891358603136,
+        0.06705415841424966,
+        0.10819293739175538
+    ],
+    "intercept": 316.2051852542942,
+    "params": {
+        "copy_X": true,
+        "fit_intercept": true,
+        "n_jobs": null,
+        "positive": false
+    },
+    "order": 4,
+    "model": "coefficients[0]*x**4 + coefficients[1]*x**3 + coefficients[2]*x**2 + coefficients[3]*x**1"
+}

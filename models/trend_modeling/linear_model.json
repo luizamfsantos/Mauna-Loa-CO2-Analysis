@@ -1,0 +1,14 @@
+{
+    "coefficients": [
+        1.4066911494215177
+    ],
+    "intercept": 308.9916567323666,
+    "params": {
+        "copy_X": true,
+        "fit_intercept": true,
+        "n_jobs": null,
+        "positive": false
+    },
+    "order": 1,
+    "model": "coefficients[0]*x**1"
+}
