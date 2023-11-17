@@ -30,11 +30,12 @@ y_pred = predict(X_train)
 # calculate linear residuals
 quadratic_residuals = y_train - y_pred
 
-# plot residuals
-import matplotlib.pyplot as plt
-plt.scatter(X_train, quadratic_residuals)
-plt.xlabel('Time')
-plt.ylabel('Residuals')
-plt.title('Quadratic Model Trend Residuals')
-plt.savefig('images/trend_residuals.png')
-plt.show()
+# calculate MSE, AIC, BIC
+from src.utils import evaluate_MSE, evaluate_AIC, evaluate_BIC
+k = 1
+quadratic_MSE = evaluate_MSE(quadratic_residuals)
+quadratic_AIC = evaluate_AIC(k, quadratic_residuals)
+quadratic_BIC = evaluate_BIC(k, quadratic_residuals)
+print(f'Quadratic MSE: {quadratic_MSE}')
+print(f'Quadratic AIC: {quadratic_AIC}')
+print(f'Quadratic BIC: {quadratic_BIC}')
