@@ -27,11 +27,14 @@ predict = np.poly1d(coef_with_intercept)
 # use polynomial model to predict CO2 concentration
 y_pred = predict(X_train)
 
-# plot results of quadratic model on top of training data
+# calculate linear residuals
+quadratic_residuals = y_train - y_pred
+
+# plot residuals
 import matplotlib.pyplot as plt
-plt.scatter(X_train, y_train, color='blue', s=1)
-plt.plot(X_train, y_pred, color='red')
-plt.title('Quadratic Model')
-plt.xlabel('Time (months)')
-plt.ylabel('CO2 concentration (ppm)')
+plt.scatter(X_train, quadratic_residuals)
+plt.xlabel('Time')
+plt.ylabel('Residuals')
+plt.title('Quadratic Model Trend Residuals')
+plt.savefig('images/trend_residuals.png')
 plt.show()
