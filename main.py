@@ -11,28 +11,27 @@ train_df, test_df = test_train_split(df)
 X_train = train_df[['t']]
 y_train = train_df[['CO2_concentration']]
 
-# train and save models
-from src.detrending import polynomial_regression
-from src.utils import save_model
+# load parameters for quadratic model
 import json
+import numpy as np
+with open('models/trend_modeling/quadratic_model.json', 'r') as file:
+    model_info = json.load(file)
+coef = np.array(model_info['coefficients'])
+intercept = model_info['intercept']
+degree = model_info['order']
 
-for degree in range(1, 5):
-    # Perform polynomial regression
-    reg, coef = polynomial_regression(X_train, y_train, degree)
-    
-    # Save model
-    model_info = save_model(reg, coef, degree)
-    print(model_info)
-    
-    # Map degree numbers to descriptive names
-    degree_names = {1: 'linear', 2: 'quadratic', 3: 'cubic', 4: 'quartic'}
-    
-    # Get the descriptive name for the degree
-    degree_name = degree_names.get(degree, f'degree_{degree}')
-    
-    # Create file name based on the degree name
-    file_name = f'models/trend_modeling/{degree_name}_model.json'
-    
-    # Write model_info to a JSON file with the specific file name
-    with open(file_name, 'w') as f:
-        json.dump(model_info, f, indent=4)
+# create polynomial model
+coef_with_intercept = np.append(coef, intercept)
+predict = np.poly1d(coef_with_intercept)
+
+# use polynomial model to predict CO2 concentration
+y_pred = predict(X_train)
+
+# plot results of quadratic model on top of training data
+import matplotlib.pyplot as plt
+plt.scatter(X_train, y_train, color='blue', s=1)
+plt.plot(X_train, y_pred, color='red')
+plt.title('Quadratic Model')
+plt.xlabel('Time (months)')
+plt.ylabel('CO2 concentration (ppm)')
+plt.show()
