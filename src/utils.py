@@ -107,25 +107,19 @@ def save_model(reg, coef, degree):
     }
     return model_info
 
-def extract_month_from_t(df, t_col='t'):
+def extract_month_from_t(t: float) -> int:
     '''
-    Extract the month from column t and add it as a new column 'month'
+    Extract the month from float t using the given formula.
 
     Parameters
     ----------
-    df: pandas DataFrame
-        contains column t with time index
-    t_col: str
-        name of column containing time index
+    t: float
+        represents time index
 
     Returns
     -------
-    df: pandas DataFrame
-        updated with a new column 'month' containing the extracted month
+    month: int
+        extracted month from the float t
     '''
-    assert isinstance(df, pd.DataFrame), 'df must be a pandas DataFrame'
-    assert isinstance(t_col, str), 't_col must be a string'
-    assert t_col in df.columns, f'df must contain column {t_col}'
-    
-    df['month'] = ((df[t_col] - df[t_col].astype(int)) * 12).astype(int) + 1
-    return df
+    month = (round(t * 12 + 0.5) % 12) or 12
+    return month
