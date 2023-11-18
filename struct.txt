@@ -29,8 +29,8 @@ C. Unseasoning:
 - [X] Remove the deterministic trend F from the time series
 - [X] Group by month
 - [X] Calculate the average signal for each month
-- [ ] Plot the periodic signal Pi against time
-[ ] Completed
+- [X] Plot the periodic signal Pi against time
+[X] Completed
 
 D. Aggregate Model with Trend and Seasonality:
 - [ ] Create the final function for CO2 concentration: C = F + P
