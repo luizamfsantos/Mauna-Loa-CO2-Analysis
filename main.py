@@ -44,24 +44,37 @@ train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
 # calculate monthly residuals averages
 monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
 
-# plot monthly residuals, interpolation and real data
+# Merge the monthly_residuals DataFrame with train_df based on the 'month' column
+train_df = pd.merge(train_df, monthly_residuals, on='month', how='left')
+
+# Rename the column containing the mean residuals
+train_df = train_df.rename(columns={'residuals_x': 'residuals', 'residuals_y': 'mean_monthly_residuals'})
+
+# De-seasonalize the residuals column by subtracting the mean_monthly_residuals column
+train_df['de_seasonalized_residuals'] = train_df['residuals'] - train_df['mean_monthly_residuals']
+
+# Calculate the overall model Ct = Ft + St + Et where Ft is the trend and St is the seasonal component
+from src.utils import extract_month_from_t
+def predict(t):
+    # Extract the month from t
+    month = extract_month_from_t(t)
+    # Find the mean monthly residual for that month
+    mean_monthly_residual = monthly_residuals[monthly_residuals['month'] == month]['residuals'].values[0]
+    return coef[0] * t**2 + coef[1] * t + mean_monthly_residual + intercept
+
+# Predict the CO2 concentration for each row in df_train
+train_df['predicted_CO2'] = train_df['t'].apply(predict)
+
+# Plot the CO2 concentration and the predicted CO2 concentration
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
-f = interp1d(monthly_residuals['month'], monthly_residuals['residuals'])
-x = np.linspace(1, 12, 100)
-y = f(x)
-plt.figure(figsize=(10, 6))
-plt.plot(monthly_residuals['month'], monthly_residuals['residuals'], 'o', x, y, '-',c='#2F76D9')
-plt.scatter(train_df['month'], train_df['residuals'], c='#2FCBD9')
-plt.xlabel('Month', fontsize=14)
-plt.ylabel('Seasonal Influence', fontsize=14)
-plt.xticks(np.arange(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
-plt.title('Periodic Signal', fontsize=16)
-plt.legend(['Monthly Averages', 'Interpolation', 'Real Data'])
-plt.savefig('images/seasonality_03.png')
+plt.plot(train_df['exact_date'], train_df['CO2_concentration'], label='Real CO2 Concentration', c= '#373FC8')
+plt.plot(train_df['exact_date'], train_df['predicted_CO2'], label='Predicted CO2 Concentration', c = '#C8373F')
+plt.title('$CO_2$ Concentration over Time', fontsize=16)
+plt.xlabel('Year', fontsize=14)
+plt.ylabel('$CO_2$ Concentration', fontsize=14)
+plt.legend()
+plt.tight_layout()
+plt.savefig('images/predicted_co2.png')
 plt.show()
-
-
-
 
   
