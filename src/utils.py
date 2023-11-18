@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 from scipy.stats import norm 
+import pandas as pd
 
 def calculate_residuals(model, X_test, y_test, degree):
     '''
@@ -105,3 +106,26 @@ def save_model(reg, coef, degree):
         'model': model
     }
     return model_info
+
+def extract_month_from_t(df, t_col='t'):
+    '''
+    Extract the month from column t and add it as a new column 'month'
+
+    Parameters
+    ----------
+    df: pandas DataFrame
+        contains column t with time index
+    t_col: str
+        name of column containing time index
+
+    Returns
+    -------
+    df: pandas DataFrame
+        updated with a new column 'month' containing the extracted month
+    '''
+    assert isinstance(df, pd.DataFrame), 'df must be a pandas DataFrame'
+    assert isinstance(t_col, str), 't_col must be a string'
+    assert t_col in df.columns, f'df must contain column {t_col}'
+    
+    df['month'] = ((df[t_col] - df[t_col].astype(int)) * 12).astype(int) + 1
+    return df
