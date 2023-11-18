@@ -22,11 +22,11 @@ degree = model_info['order']
 
 # create polynomial model
 coef_with_intercept = np.append(coef, intercept)
-predict = np.poly1d(coef_with_intercept)
+predict_quadratic = np.poly1d(coef_with_intercept)
 
 # use polynomial model to predict CO2 concentration
-y_pred = predict(X_train)
-test_y_pred = predict(test_df[['t']])
+y_pred = predict_quadratic(X_train)
+test_y_pred = predict_quadratic(test_df[['t']])
 
 # calculate linear residuals
 quadratic_residuals = y_train - y_pred
@@ -100,4 +100,37 @@ mape = calculate_mape(test_df['CO2_concentration'], test_df['predicted_CO2'])
 print('RMSE of final model:', rmse)
 print('MAPE of final model:', mape)
 
- 
+# Calculate the ratio of the range of values of F to the amplitude of P
+min_P = monthly_residuals.residuals.min()
+max_P = monthly_residuals.residuals.max()
+amp_P = (max_P - min_P)/2
+print('The amplitude of P is ',amp_P)
+
+values_of_t = np.array([0, train_df['t'][0], train_df['t'][train_df.shape[0]-1], test_df['t'].iloc[0], test_df['t'].iloc[test_df.shape[0]-1],62])
+combinations = [(values_of_t[i], values_of_t[j]) for i in range(len(values_of_t)) for j in range(i+1, len(values_of_t)) if values_of_t[i] < values_of_t[j]]
+combinations_df = pd.DataFrame(combinations, columns=['t1', 't2'])
+combinations_df['F1'] = predict_quadratic(combinations_df['t1'])
+combinations_df['F2'] = predict_quadratic(combinations_df['t2'])
+combinations_df['range_of_F'] = combinations_df['F2'] - combinations_df['F1']
+combinations_df['ratio'] = combinations_df['range_of_F'] / amp_P
+
+# combinations_df.to_excel('results/ratio_of_range_of_F_to_amplitude_of_P.xlsx')
+
+# Calculate the ratio of the amplitude of P to the range of the residual R
+# Calculate the residuals of the model
+residuals = df['CO2_concentration'] - df['predicted_CO2']
+
+train_residuals, test_residuals = test_train_split(residuals)
+
+# Calculate range for entire dataset, train set, and test set
+range_R = residuals.max() - residuals.min()
+range_R_train = train_residuals.max() - train_residuals.min()
+range_R_test = test_residuals.max() - test_residuals.min()
+
+# Calculate ratio of amplitude of P to the range of R for each of the three sets
+ratio_train = amp_P / range_R_train
+ratio_test = amp_P / range_R_test
+ratio = amp_P / range_R
+print('Ratio of amplitude of P to range of R for entire dataset:', ratio)
+print('Ratio of amplitude of P to range of R for train set:', ratio_train)
+print('Ratio of amplitude of P to range of R for test set:', ratio_test)
