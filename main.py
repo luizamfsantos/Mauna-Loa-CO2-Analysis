@@ -44,39 +44,22 @@ train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
 # calculate monthly residuals averages
 monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
 
-# calculate sinusoidal approximation
-from src.unseasoning import calculate_sinusoidal_approximation
-amp, phase_shift, mean = calculate_sinusoidal_approximation(train_df[['month', 'residuals']], col_name_t='month', col_name_y='residuals', period=12)
-
-# plot sinusoidal approximation
-from src.unseasoning import sine_function
+# plot monthly residuals by interpolation
+from scipy.interpolate import interp1d
 import matplotlib.pyplot as plt
-import numpy as np
-x = np.arange(1, 13)
-y = sine_function(x, amp, phase_shift, mean)
-plt.plot(x, y, label='Approximation')  # Add label for the line
-
-plt.xlabel('Month')
-plt.ylabel('Residuals')
-plt.title('Sinusoidal Approximation')
-
-# scatter plot of real values
-plt.scatter(train_df['month'], train_df['residuals'], color='red', label='Real Values')
-
-plt.legend()
+f = interp1d(monthly_residuals['month'], monthly_residuals['residuals'])
+x = np.linspace(1, 12, 100)
+y = f(x)
+plt.figure(figsize=(8, 6))
+plt.plot(monthly_residuals['month'], monthly_residuals['residuals'], 'o', color='#063970', linestyle='None')
+plt.plot(x, y, '-', color='#2596be') 
+plt.title('Periodic Signal', fontsize=16)
+plt.xlabel('Month', fontsize=14)
+plt.ylabel('Seasonal Influence', fontsize=14)
+plt.xticks(np.arange(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+plt.savefig('images/seasonality_02')
 plt.show()
 
 
-# plt.savefig('images/seasonality_01')
 
-# save sinusoidal approximation parameters
-import json
-seasonality_info = {
-    'amp': amp,
-    'phase_shift': phase_shift,
-    'mean': mean,
-    'period': 12
-}
-with open('models/seasonality_modeling/season_v01.json', 'w') as file:
-    json.dump(seasonality_info, file)
-    
+  
