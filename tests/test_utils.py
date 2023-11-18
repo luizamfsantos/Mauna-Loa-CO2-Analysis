@@ -1,7 +1,5 @@
 import pandas as pd
 import unittest
-import re
-from datetime import datetime, timedelta
 import sys, os
 current_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
@@ -24,13 +22,10 @@ class TestExtractMonthFromT(unittest.TestCase):
 
         # Asserting equality of the 'month' column in the result with the expected values
         self.assertTrue(result_df['month'].equals(self.test_df['month']), "Months extracted incorrectly")
-        
+
         # Check if the function raises an AssertionError for an invalid input type
         with self.assertRaises(AssertionError):
             extract_month_from_t("invalid_input")
 
-        # Add more specific test cases as needed
-
-# Run the tests
 if __name__ == '__main__':
     unittest.main()
