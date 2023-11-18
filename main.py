@@ -30,9 +30,16 @@ y_pred = predict(X_train)
 # calculate linear residuals
 quadratic_residuals = y_train - y_pred
 
-# plot ACF/PACF
-from src.autocovariance import plot_acf_pacf
-import matplotlib.pyplot as plt
+# add residuals column to df_train
+train_df = train_df.copy() # avoid SettingWithCopyWarning
+train_df['residuals'] = quadratic_residuals
 
-# Plot ACF/PACF
-plot_acf_pacf(quadratic_residuals, lags=30, super_title='ACF/PACF of Residuals from Quadratic Trend Model', save_path='images/trend_residuals_acf_pacf.png')
+# change exact_date column to datetime
+from datetime import datetime
+train_df['exact_date'] = train_df['exact_date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+
+# add month column to df_train
+train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
+
+# calculate monthly residuals averages
+monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
