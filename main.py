@@ -26,9 +26,18 @@ predict = np.poly1d(coef_with_intercept)
 
 # use polynomial model to predict CO2 concentration
 y_pred = predict(X_train)
+test_y_pred = predict(test_df[['t']])
 
 # calculate linear residuals
 quadratic_residuals = y_train - y_pred
+test_quadratic_residuals = test_df['CO2_concentration'] - test_y_pred.flatten()
+
+# calculate rmse and mape
+from src.utils import calculate_rmse, calculate_mape
+rmse = calculate_rmse(test_df['CO2_concentration'], test_y_pred.flatten())
+mape = calculate_mape(test_df['CO2_concentration'], test_y_pred.flatten())
+print('RMSE of quadratic model:', rmse)
+print('MAPE of quadratic model:', mape)
 
 # add residuals column to df_train
 train_df = train_df.copy() # avoid SettingWithCopyWarning
@@ -80,21 +89,15 @@ train_df['predicted_CO2'] = train_df['t'].apply(predict)
 df['predicted_CO2'] = df['t'].apply(predict)
 split_date = pd.to_datetime(test_df['exact_date'].iloc[0])
 
-# Plot the CO2 concentration and the predicted CO2 concentration
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-df['exact_date'] = pd.to_datetime(df['exact_date'])
-plt.figure(figsize=(10, 6))
-plt.plot(df['exact_date'], df['CO2_concentration'], label='Actual CO2 concentration', color='#4352BC', linestyle='-')
-plt.plot(df['exact_date'], df['predicted_CO2'], label='Predicted CO2 concentration', color='#BC4352', linestyle='-')
-plt.axvline(split_date, color='#52BC43', linestyle='--', label='Train/Test data split')
-plt.title('Actual vs. Predicted CO2 concentration')
-plt.xlabel('Time')
-plt.ylabel('CO2 concentration (ppm)')
-plt.legend(loc='upper left')
-plt.gca().xaxis.set_major_locator(mdates.YearLocator(base=10))
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-plt.tight_layout()
-plt.savefig('images/actual_vs_predicted.png')
-plt.show()
+# Repeat steps for test_df: add predicted_CO2 column to test_df
+test_df = test_df.copy() # avoid SettingWithCopyWarning
+test_df['predicted_CO2'] = test_df['t'].apply(predict)
+
+# Calculate rsme and mape
+from src.utils import calculate_rmse, calculate_mape
+rmse = calculate_rmse(test_df['CO2_concentration'], test_df['predicted_CO2'])
+mape = calculate_mape(test_df['CO2_concentration'], test_df['predicted_CO2'])
+print('RMSE of final model:', rmse)
+print('MAPE of final model:', mape)
+
  
