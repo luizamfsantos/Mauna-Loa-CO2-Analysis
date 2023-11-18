@@ -44,6 +44,10 @@ train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
 # calculate monthly residuals averages
 monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
 
+# calculate interpolated monthly residuals
+from scipy.interpolate import interp1d
+f = interp1d(monthly_residuals['month'], monthly_residuals['residuals'], kind='cubic')
+
 # Merge the monthly_residuals DataFrame with train_df based on the 'month' column
 train_df = pd.merge(train_df, monthly_residuals, on='month', how='left')
 
@@ -62,19 +66,35 @@ def predict(t):
     mean_monthly_residual = monthly_residuals[monthly_residuals['month'] == month]['residuals'].values[0]
     return coef[0] * t**2 + coef[1] * t + mean_monthly_residual + intercept
 
+# calculate predict using f from interp1d
+def predict_interpolated(t):
+    # Calculate seasonality using the function f
+    t_month = ((t * 12 + 0.5) % 12) or 12
+    seasonality = f(t_month)
+    return coef[0] * t**2 + coef[1] * t + seasonality + intercept
+    
 # Predict the CO2 concentration for each row in df_train
 train_df['predicted_CO2'] = train_df['t'].apply(predict)
 
+# Repeat steps for the whole dataset: add predicted_CO2 column to df
+df['predicted_CO2'] = df['t'].apply(predict)
+split_date = pd.to_datetime(test_df['exact_date'].iloc[0])
+
 # Plot the CO2 concentration and the predicted CO2 concentration
 import matplotlib.pyplot as plt
-plt.plot(train_df['exact_date'], train_df['CO2_concentration'], label='Real CO2 Concentration', c= '#373FC8')
-plt.plot(train_df['exact_date'], train_df['predicted_CO2'], label='Predicted CO2 Concentration', c = '#C8373F')
-plt.title('$CO_2$ Concentration over Time', fontsize=16)
-plt.xlabel('Year', fontsize=14)
-plt.ylabel('$CO_2$ Concentration', fontsize=14)
-plt.legend()
+import matplotlib.dates as mdates
+df['exact_date'] = pd.to_datetime(df['exact_date'])
+plt.figure(figsize=(10, 6))
+plt.plot(df['exact_date'], df['CO2_concentration'], label='Actual CO2 concentration', color='#4352BC', linestyle='-')
+plt.plot(df['exact_date'], df['predicted_CO2'], label='Predicted CO2 concentration', color='#BC4352', linestyle='-')
+plt.axvline(split_date, color='#52BC43', linestyle='--', label='Train/Test data split')
+plt.title('Actual vs. Predicted CO2 concentration')
+plt.xlabel('Time')
+plt.ylabel('CO2 concentration (ppm)')
+plt.legend(loc='upper left')
+plt.gca().xaxis.set_major_locator(mdates.YearLocator(base=10))
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 plt.tight_layout()
-plt.savefig('images/predicted_co2.png')
+plt.savefig('images/actual_vs_predicted.png')
 plt.show()
-
-  
+ 
