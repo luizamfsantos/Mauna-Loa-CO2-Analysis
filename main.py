@@ -43,3 +43,40 @@ train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
 
 # calculate monthly residuals averages
 monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
+
+# calculate sinusoidal approximation
+from src.unseasoning import calculate_sinusoidal_approximation
+amp, phase_shift, mean = calculate_sinusoidal_approximation(train_df[['month', 'residuals']], col_name_t='month', col_name_y='residuals', period=12)
+
+# plot sinusoidal approximation
+from src.unseasoning import sine_function
+import matplotlib.pyplot as plt
+import numpy as np
+x = np.arange(1, 13)
+y = sine_function(x, amp, phase_shift, mean)
+plt.plot(x, y, label='Approximation')  # Add label for the line
+
+plt.xlabel('Month')
+plt.ylabel('Residuals')
+plt.title('Sinusoidal Approximation')
+
+# scatter plot of real values
+plt.scatter(train_df['month'], train_df['residuals'], color='red', label='Real Values')
+
+plt.legend()
+plt.show()
+
+
+# plt.savefig('images/seasonality_01')
+
+# save sinusoidal approximation parameters
+import json
+seasonality_info = {
+    'amp': amp,
+    'phase_shift': phase_shift,
+    'mean': mean,
+    'period': 12
+}
+with open('models/seasonality_modeling/season_v01.json', 'w') as file:
+    json.dump(seasonality_info, file)
+    
