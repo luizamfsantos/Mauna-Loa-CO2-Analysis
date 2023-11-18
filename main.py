@@ -44,21 +44,8 @@ train_df['month'] = train_df['exact_date'].apply(lambda x: x.month)
 # calculate monthly residuals averages
 monthly_residuals = train_df.groupby('month')['residuals'].mean().reset_index()
 
-# plot monthly residuals by interpolation
-from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-f = interp1d(monthly_residuals['month'], monthly_residuals['residuals'])
-x = np.linspace(1, 12, 100)
-y = f(x)
-plt.figure(figsize=(8, 6))
-plt.plot(monthly_residuals['month'], monthly_residuals['residuals'], 'o', color='#063970', linestyle='None')
-plt.plot(x, y, '-', color='#2596be') 
-plt.title('Periodic Signal', fontsize=16)
-plt.xlabel('Month', fontsize=14)
-plt.ylabel('Seasonal Influence', fontsize=14)
-plt.xticks(np.arange(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
-plt.savefig('images/seasonality_02')
-plt.show()
+# save monthly residuals averages
+monthly_residuals.to_csv('data/processed/monthly_residuals.csv', index=False)
 
 
 
